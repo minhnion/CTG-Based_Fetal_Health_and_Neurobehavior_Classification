@@ -10,8 +10,8 @@ def load_and_preprocess_data(file_path):
     feature_cols = [col for col in df.columns if col not in ['CLASS', 'NSP', 'SUSP',
                                                               'A','B','C','D','E','AD','DE','LD','FS']]
     X = df[feature_cols].values
-    y_class = df['CLASS'].astype(int).values
-    y_nsp = df['NSP'].astype(int).values
+    y_class = df['CLASS'].astype(int).values - 1
+    y_nsp = df['NSP'].astype(int).values - 1
 
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
@@ -42,3 +42,17 @@ def load_and_preprocess_data(file_path):
     return (X_train, y_class_train, y_nsp_train), \
            (X_val, y_class_val, y_nsp_val), \
            (X_test, y_class_test, y_nsp_test)
+
+def main():
+    script_dir = os.path.dirname(__file__)
+    project_root = os.path.dirname(script_dir)
+    file_path = os.path.join(project_root, 'data', 'cleaned_data', 'cleaned_data.csv')
+
+    (X_train, y_class_train, y_nsp_train), \
+    (X_val,   y_class_val,   y_nsp_val), \
+    (X_test,  y_class_test,  y_nsp_test) = load_and_preprocess_data(file_path)
+
+    print(f"Training set: X={X_train.shape}, y_class={y_class_train.shape}, y_nsp={y_nsp_train.shape}")
+
+if __name__ == '__main__':
+    main()
