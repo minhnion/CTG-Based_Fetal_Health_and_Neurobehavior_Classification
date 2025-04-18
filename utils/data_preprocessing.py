@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
+import os
 
 def load_and_preprocess_data(file_path):
     df = pd.read_csv(file_path)
@@ -19,7 +20,24 @@ def load_and_preprocess_data(file_path):
         X_scaled, y_class, y_nsp, test_size=0.1, random_state=42)
 
     X_train, X_val, y_class_train, y_class_val, y_nsp_train, y_nsp_val = train_test_split(
-        X_temp, y_class_temp, y_nsp_temp, test_size=0.1, random_state=42)  
+        X_temp, y_class_temp, y_nsp_temp, test_size=0.1, random_state=42)
+
+    # Tạo lại DataFrame để lưu thành file CSV
+    def create_dataframe(X, y_class, y_nsp):
+        df_out = pd.DataFrame(X, columns=feature_cols)
+        df_out['CLASS'] = y_class
+        df_out['NSP'] = y_nsp
+        return df_out
+
+    train_df = create_dataframe(X_train, y_class_train, y_nsp_train)
+    val_df   = create_dataframe(X_val, y_class_val, y_nsp_val)
+    test_df  = create_dataframe(X_test, y_class_test, y_nsp_test)
+
+    # Tạo đường dẫn thư mục nếu chưa có
+    output_dir = os.path.dirname(file_path)
+    train_df.to_csv(os.path.join(output_dir, 'train.csv'), index=False)
+    val_df.to_csv(os.path.join(output_dir, 'val.csv'), index=False)
+    test_df.to_csv(os.path.join(output_dir, 'test.csv'), index=False)
 
     return (X_train, y_class_train, y_nsp_train), \
            (X_val, y_class_val, y_nsp_val), \
