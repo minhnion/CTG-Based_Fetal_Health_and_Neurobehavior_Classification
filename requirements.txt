@@ -5,3 +5,4 @@ seaborn
 scikit-learn
 torch>=1.13.0
 tqdm>=4.50.0
+imblearn
